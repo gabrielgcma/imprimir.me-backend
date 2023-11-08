@@ -1,20 +1,6 @@
+version: '2.1'
+
 services:
-  db:
-    image: postgres
-    container_name: db_imprimirme
-    ports:
-      - "5434:5432"
-    environment:
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=postgres"
-      - "POSTGRES_DB=imprimirme"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres", "-d", "imprimirme"]
-      interval: 3s
-      timeout: 30s
-      retries: 10
-    volumes:
-      - "./data/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql"
 
   app:
     build: .
@@ -24,3 +10,30 @@ services:
     depends_on:
       db:
         condition: "service_healthy"
+
+  db:
+    image: postgres:14
+    restart: always
+    container_name: db_imprimirme
+    ports:
+      - "5434:5432"
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+      - "POSTGRES_DB=imprimirme"
+    volumes:
+      - "./data/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres", "-d", "imprimirme"]
+      interval: 3s
+      timeout: 30s
+      retries: 10
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
