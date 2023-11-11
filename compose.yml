@@ -1,7 +1,6 @@
-version: '2.1'
+version: "2.1"
 
 services:
-
   app:
     build: .
     container_name: back_imprimirme
@@ -32,8 +31,8 @@ services:
   rabbitmq:
     image: "rabbitmq:3-management"
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "15673:15672"
+      - "5673:5672"
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
