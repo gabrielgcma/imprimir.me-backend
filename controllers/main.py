@@ -15,11 +15,14 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 app = FastAPI()
 
+
 class TokenData(BaseModel):
     username: str
     password: str
 
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
@@ -28,32 +31,43 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         headers={"WWW-Authenticate": "Bearer"},
     )
     user_data = verify_token(token, credentials_exception)
-    
+
     if not user_data or "id_usuario" not in user_data or "username" not in user_data:
         raise credentials_exception
-    
+
     usuario_model = UsuarioModel(
         id_usuario=user_data["id_usuario"],
         username=user_data["username"],
     )
-    
+
     return usuario_model
+
 
 @app.get("/users/me", response_model=UsuarioModel)
 async def read_users_me(current_user: UsuarioModel = Depends(get_current_user)):
     return current_user
 
+
 @app.post("/usuario/cadastro", response_model=UsuarioModel)
 async def cadastrar_usuario(usuario: UsuarioCreate):
     usuario_decode = usuario.dict()
     usuario_banco = Usuario(**usuario_decode)
-    session.add(usuario_banco)
-    session.commit()
-    
+    try:
+        session.add(usuario_banco)
+        session.commit()
+    except Exception as e:
+        logging.error(
+            "Erro ao registrar novo usuário no banco - controllers/main.py - cadastrar_usuario()"
+        )
+        # O rollback é necessário pra realizar novas operações no banco depois de algum erro,
+        # caso contrário ele tentará realizar a última operação falha quando uma nova for executada
+        session.rollback()
+
     usuario_decode["id_usuario"] = usuario_banco.id_usuario
-    usuario_decode["hashed_password"] = "senha_fake"  
-    
+    usuario_decode["hashed_password"] = "senha_fake"
+
     return UsuarioModel(**usuario_decode)
+
 
 @app.post("/token")
 async def login_for_access_token(form_data: TokenData):
