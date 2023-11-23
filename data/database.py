@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, Float
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -65,7 +65,16 @@ class Empresa(Base):
     latitude = Column(String, nullable=True)
     color_print = Column(Boolean, nullable=True)
     black_print = Column(Boolean, nullable=True)
-    color_value = Column(String, nullable=True)
-    black_price = Column(String, nullable=True)
+    color_value = Column(Float, nullable=True)
+    black_value = Column(Float, nullable=True)
+
+class NotaFiscal(Base):
+    __tablename__ = "nota_fiscal"
+
+    id_nota = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    id_usuario = Column(Integer, nullable=False)
+    id_empresa = Column(Integer, nullable=False)
+    id_pedido = Column(Integer, nullable=False)
+
 
 Base.metadata.create_all(engine)

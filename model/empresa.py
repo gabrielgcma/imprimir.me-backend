@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 class Empresa(BaseModel):
-    id_empresa: int
     username: str
     email: str
     password: str
@@ -22,8 +21,8 @@ class Empresa(BaseModel):
     latitude: float
     color_print: bool = False
     black_print: bool = False
-    color_price: float
-    black_price: float
+    color_value: float
+    black_value: float
 
 class EmpresaCreate(BaseModel):
     username: str
@@ -46,5 +45,5 @@ class EmpresaCreate(BaseModel):
     latitude: float
     color_print: bool = False
     black_print: bool = False
-    color_price: float
-    black_price: float
+    color_value: float
+    black_value: float
