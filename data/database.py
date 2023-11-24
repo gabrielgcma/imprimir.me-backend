@@ -1,34 +1,33 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, Float
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, Float, LargeBinary
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Connection string no WSL:
 
-url = URL.create(
-    drivername='postgresql+psycopg2',
-    username='postgres',
-    password='postgres',
-    host='172.18.246.203',
-    database='imprimirme',
-    port=5434
-)
-
-# Connection string Linux (Amado)
 # url = URL.create(
 #     drivername="postgresql+psycopg2",
 #     username="postgres",
 #     password="postgres",
-#     host="db",
+#     host="172.18.246.203",
 #     database="imprimirme",
-#     port=5432,
+#     port=5434,
 # )
+
+# Connection string Linux (Amado)
+url = URL.create(
+    drivername="postgresql+psycopg2",
+    username="postgres",
+    password="postgres",
+    host="db",
+    database="imprimirme",
+    port=5432,
+)
 
 engine = create_engine(url)
 Session = sessionmaker(bind=engine)
 session = Session()
 
 Base = declarative_base()
-
 
 class Usuario(Base):
     __tablename__ = "usuario"
@@ -40,6 +39,7 @@ class Usuario(Base):
     cpf = Column(String, nullable=False)
     is_company = Column(Boolean, default=False)
     data_nascimento = Column(Date, nullable=False)
+
 
 class Empresa(Base):
     __tablename__ = "empresa"
@@ -68,6 +68,7 @@ class Empresa(Base):
     color_value = Column(Float, nullable=True)
     black_value = Column(Float, nullable=True)
 
+
 class NotaFiscal(Base):
     __tablename__ = "nota_fiscal"
 
@@ -75,6 +76,24 @@ class NotaFiscal(Base):
     id_usuario = Column(Integer, nullable=False)
     id_empresa = Column(Integer, nullable=False)
     id_pedido = Column(Integer, nullable=False)
+
+
+class Pedido(Base):
+    __tablename__ = "pedido"
+
+    id_pedido = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    id_usuario = Column(Integer, nullable=False)
+    id_empresa = Column(Integer, nullable=False)
+    valor_pedido = Column(Float, nullable=False)
+    valor_repassado = Column(Float, nullable=False)
+    numero_copias = Column(Integer, nullable=False)
+    arquivos = Column(LargeBinary, nullable=False)
+    tamanho_papel = Column(String, nullable=False)
+    paginas_por_folha = Column(Boolean, nullable=False)
+    margens = Column(String, nullable=False)
+    paginas = Column(String, nullable=False)
+    disposicao = Column(String, nullable=False)
+    is_color = Column(Boolean, nullable=False)
 
 
 Base.metadata.create_all(engine)
