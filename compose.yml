@@ -20,8 +20,10 @@ services:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=postgres"
       - "POSTGRES_DB=imprimirme"
-    volumes:
-      - "./data/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql"
+    # Como no database.py já está sendo feito Base.metadata.create_all(engine), as tabelas já são criadas
+    # automaticamente pelo SQLAlchemy, não precisa rodar SQL pra criar elas junto com a inicialização do DB.
+    #volumes:
+    # - "./data/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres", "-d", "imprimirme"]
       interval: 3s

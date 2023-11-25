@@ -4,10 +4,12 @@ from passlib.context import CryptContext
 from model.usuario import Usuario as UsuarioModel, UsuarioCreate, UsuarioList, UsuarioConsulta
 from model.empresa import Empresa as EmpresaModel, EmpresaCreate
 from model.notafiscal import NotaFiscal as NotaFiscalModel, NotaFiscalCreate
+from model.pedido import PedidoCreate, PedidoConsultaUser
 from data.database import session
 from services.usuarioservice import UsuarioCrud
 from services.empresaservice import EmpresaCrud
 from services.notafiscalservice import NotaFiscalCrud
+from services.pedidoservice import PedidoCrud
 from pydantic import BaseModel
 import logging
 
@@ -26,6 +28,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 usuario_crud = UsuarioCrud(db_session=session)
 empresa_crud = EmpresaCrud(db_session=session)
 notafiscal_crud = NotaFiscalCrud(db_session=session)
+pedido_crud = PedidoCrud(db_session=session)
 
 @app.post("/token", tags=["Token"])
 async def login_for_access_token(form_data: TokenData):
@@ -74,3 +77,23 @@ async def listar_notas():
 @app.get("/notafiscal/{id_nota}", response_model=NotaFiscalModel, tags=["Nota Fiscal"])
 async def get_notafiscal(id_nota: int):
         return notafiscal_crud.get_notafiscal(id_nota)
+
+@app.post("/pedido/cadastro", response_model=PedidoCreate, tags=["Pedido"])
+async def cadastrar_pedido(pedido: PedidoCreate):
+     return pedido_crud.cadastrar_pedido(pedido)
+
+@app.get("/pedido/listar", response_model=list[PedidoCreate], tags=["Pedido"])
+async def listar_pedidos():
+     return pedido_crud.listar_pedidos()
+
+@app.get("/pedido/{id_pedido}", response_model=PedidoCreate, tags=["Pedido"])
+async def get_pedido_by_id(id_pedido: int):
+     return pedido_crud.get_pedido(id_pedido)
+
+@app.get("/usuario/{id_usuario}/pedidos", response_model=list[PedidoCreate], tags=["Pedido"])
+async def get_pedidos_user(id_usuario: int):
+     return pedido_crud.get_pedidos_usuario(id_usuario)
+
+@app.get("/empresa/{id_empresa}/pedidos", response_model=list[PedidoCreate], tags=["Pedido"])
+async def get_pedidos_empresa(id_empresa: int):
+    return pedido_crud.get_pedidos_empresa(id_empresa)
