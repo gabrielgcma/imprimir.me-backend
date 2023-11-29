@@ -24,7 +24,6 @@ class PedidoCrud:
             logging.info("Enviando documento do pedido para o broker...")
             try:
                 publisher.publish("routing-key", pedido.model_dump_json().encode())
-                logging.info("Documento do pedido enviado com sucesso!")
             except Exception as e:
                 logging.error("Erro ao enviar documento do pedido para o broker: " + e)
         except Exception as e:

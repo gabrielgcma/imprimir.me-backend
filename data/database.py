@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, Float, LargeBinary
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import declarative_base, sessionmaker
+import os
 
 # Connection string no WSL:
 
@@ -15,12 +16,12 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Connection string Linux (Amado)
 url = URL.create(
-    drivername="postgresql+psycopg2",
-    username="postgres",
-    password="postgres",
-    host="db",
-    database="imprimirme",
-    port=5432,
+    drivername='postgresql+psycopg2',
+    username=os.getenv('POSTGRES_USER'),
+    password=os.getenv('POSTGRES_PASS'),
+    host=os.getenv('POSTGRES_HOST'),
+    database=os.getenv('POSTGRES_DATABASE'),
+    port=os.getenv('POSTGRES_PORT'),
 )
 
 engine = create_engine(url)
