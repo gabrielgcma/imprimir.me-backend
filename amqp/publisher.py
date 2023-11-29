@@ -8,7 +8,7 @@ FORMAT = (
     "[%(asctime)s %(filename)s->%(funcName)s():%(lineno)s]%(levelname)s: %(message)s"
 )
 logging.basicConfig(format=FORMAT)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.ERROR)
 
 
 class Publisher(object):
@@ -31,9 +31,12 @@ class Publisher(object):
 
             connection.close()
 
+            logging.info("Documento do pedido enviado com sucesso!")
+
         except Exception as e:
             logger.error(f"Erro na conexão do RabbitMQ: {e}")
 
     def create_connection(self):
-        param = pika.ConnectionParameters(host=config["host"], port=config["port"])
+        credentials = pika.PlainCredentials(username='user', password='user')
+        param = pika.ConnectionParameters(host=config["host"], port=config["port"], credentials=credentials)
         return pika.BlockingConnection(param)

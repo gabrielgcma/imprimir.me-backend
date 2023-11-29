@@ -1,1 +1,8 @@
-config = {"host": "rabbitmq", "port": 5672, "exchange": "empresa1", "queue": "documentos_a_imprimir"}
+import os
+
+config = {
+    "host": os.getenv("RABBITMQ_HOST"),
+    "port": os.getenv("RABBITMQ_PORT"),
+    "exchange": "empresa1",
+    "queue": "documentos_a_imprimir",
+}
