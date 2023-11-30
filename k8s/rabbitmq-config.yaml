@@ -5,3 +5,5 @@ metadata:
 data:
   RABBITMQ_HOST: host.minikube.internal
   RABBITMQ_PORT: '5672'
+  RABBITMQ_USER: user
+  RABBITMQ_PASS: user
