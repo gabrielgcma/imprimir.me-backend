@@ -34,7 +34,7 @@ class PedidoCrud:
                 detail="Erro ao cadastrar Pedido no banco",
             )
 
-        return PedidoCreate(**pedido_decode)
+        return pedido
 
     def listar_pedidos(self):
         pedidos = self.db_session.query(Pedido).all()
