@@ -4,25 +4,24 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 import os
 
 # Connection string no WSL:
-
-# url = URL.create(
-#     drivername="postgresql+psycopg2",
-#     username="postgres",
-#     password="postgres",
-#     host="172.18.246.203",
-#     database="imprimirme",
-#     port=5434,
-# )
+url = URL.create(
+    drivername="postgresql+psycopg2",
+    username="postgres",
+    password="postgres",
+    host="172.18.246.203",
+    database="imprimirme",
+    port=5434,
+)
 
 # Connection string Linux (Amado)
-url = URL.create(
-    drivername='postgresql+psycopg2',
-    username=os.getenv('POSTGRES_USER'),
-    password=os.getenv('POSTGRES_PASS'),
-    host=os.getenv('POSTGRES_HOST'),
-    database=os.getenv('POSTGRES_DATABASE'),
-    port=os.getenv('POSTGRES_PORT'),
-)
+# url = URL.create(
+#     drivername='postgresql+psycopg2',
+#     username=os.getenv('POSTGRES_USER'),
+#     password=os.getenv('POSTGRES_PASS'),
+#     host=os.getenv('POSTGRES_HOST'),
+#     database=os.getenv('POSTGRES_DATABASE'),
+#     port=os.getenv('POSTGRES_PORT'),
+# )
 
 engine = create_engine(url)
 Session = sessionmaker(bind=engine)
@@ -49,11 +48,11 @@ class Empresa(Base):
     username = Column(String, nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
-    cnpj = Column(String, nullable=False)
+    cnpj = Column(String, nullable=False, unique=True)
     is_company = Column(Boolean, default=True)
     razao_social = Column(String, nullable=False)
     nome_fantasia = Column(String, nullable=False)
-    chave_pix = Column(String, nullable=True)
+    chave_pix = Column(String, nullable=True, unique=True)
     pais = Column(String, nullable=True)
     estado = Column(String, nullable=True)
     cidade = Column(String, nullable=True)
