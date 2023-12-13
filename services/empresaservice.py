@@ -1,6 +1,8 @@
 from fastapi import HTTPException, status
 from model.empresa import Empresa as EmpresaModel, EmpresaCreate
 from data.database import Empresa
+from utils.cnpjformatter import CNPJFormatter
+from utils.decimalformatter import DecimalFormatter
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -11,6 +13,17 @@ class EmpresaCrud:
 
     def cadastrar_empresa(self, empresa: EmpresaCreate):
         empresa_decode = empresa.dict()
+
+        cnpj = empresa_decode.get("cnpj")
+        CNPJFormatter.formatar_cnpj(cnpj)
+        
+        #A critérios futuros, descomentar essa linha faz com que qualquer cnpj salvo na tabela de empresas não receba nenhuma formatação
+        # cnpj = ''.join(filter(str.isdigit, cnpj))
+        # empresa_decode["cnpj"] = cnpj       
+
+        empresa_decode["color_value"] = DecimalFormatter.formatar_valor_decimal(empresa_decode.get("color_value"))
+        empresa_decode["color_value"] = DecimalFormatter.formatar_valor_decimal(empresa_decode.get("color_value"))
+
         empresa_banco = Empresa(**empresa_decode)
         
         try:
