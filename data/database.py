@@ -34,9 +34,9 @@ class Usuario(Base):
 
     id_usuario = Column(Integer, primary_key=True, autoincrement=True, index=True)
     username = Column(String, nullable=False)
-    email = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
-    cpf = Column(String, nullable=False)
+    cpf = Column(String, nullable=False, unique=True)
     is_company = Column(Boolean, default=False)
     data_nascimento = Column(Date, nullable=False)
 

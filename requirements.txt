@@ -9,3 +9,4 @@ python-multipart
 uvicorn==0.24.0
 pika
 validate_cnpj
+validate_docbr
