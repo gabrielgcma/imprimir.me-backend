@@ -34,9 +34,9 @@ class Usuario(Base):
 
     id_usuario = Column(Integer, primary_key=True, autoincrement=True, index=True)
     username = Column(String, nullable=False)
-    email = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
-    cpf = Column(String, nullable=False)
+    cpf = Column(String, nullable=False, unique=True)
     is_company = Column(Boolean, default=False)
     data_nascimento = Column(Date, nullable=False)
 
@@ -95,5 +95,11 @@ class Pedido(Base):
     disposicao = Column(String, nullable=False)
     is_color = Column(Boolean, nullable=False)
 
+class UsuarioEmpresa_Relacionamento(Base):
+    __tablename__ = "usuario_empresa_relacionamento"
+
+    id_relacionamento = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    id_usuario = Column(Integer, nullable=False)
+    id_empresa = Column(Integer, nullable=False)
 
 Base.metadata.create_all(engine)

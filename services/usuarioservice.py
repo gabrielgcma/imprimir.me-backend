@@ -2,8 +2,10 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from controllers.jwt import create_access_token
-from model.usuario import Usuario as UsuarioModel, UsuarioCreate, UsuarioList, UsuarioConsulta
+from model.usuario import Usuario as UsuarioModel, UsuarioCreate
 from data.database import session, Usuario
+from utils.cpfformatter import CPFFormatter
+from utils.datavalid import DataValid
 from datetime import timedelta, datetime
 from pydantic import BaseModel
 import logging
@@ -41,7 +43,18 @@ class UsuarioCrud:
     def cadastrar_usuario(self, usuario: UsuarioCreate):
         usuario_decode = usuario.dict()
         usuario_decode["password"] = pwd_context.hash(usuario_decode["password"])
+        
+        data = usuario_decode.get("data_nascimento")
+        DataValid.validate(data)
         usuario_decode["data_nascimento"] = datetime.strptime(usuario_decode["data_nascimento"], "%d%m%Y")
+
+        cpf = usuario_decode.get("cpf")
+        CPFFormatter.formatar_cpf(cpf)
+
+        #A critérios futuros, descomentar essa linha faz com que qualquer cpf salvo na tabela de usuarios não receba nenhuma formatação
+        # cpf = ''.join(filter(str.isdigit, cpf))
+        # usuario_decode["cpf"] = cpf   
+
         usuario_banco = Usuario(**usuario_decode)
         
         try:
