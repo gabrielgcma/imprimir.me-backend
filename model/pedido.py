@@ -1,15 +1,14 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, Field, validator
 
 class PedidoCreate(BaseModel):
-    id_pedido: int
     id_usuario: int
     id_empresa: int
     valor_pedido: float
     valor_repassado: float
     numero_copias: int
-    arquivos: bytes
+    arquivos: str
     tamanho_papel: str
-    paginas_por_folha: bool
+    paginas_por_folha: int
     margens: str
     paginas: str
     disposicao: str

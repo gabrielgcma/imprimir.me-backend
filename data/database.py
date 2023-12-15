@@ -8,7 +8,7 @@ url = URL.create(
     drivername="postgresql+psycopg2",
     username="postgres",
     password="postgres",
-    host="172.18.246.203",
+    host="172.19.213.110",
     database="imprimirme",
     port=5434,
 )
@@ -87,9 +87,9 @@ class Pedido(Base):
     valor_pedido = Column(Float, nullable=False)
     valor_repassado = Column(Float, nullable=False)
     numero_copias = Column(Integer, nullable=False)
-    arquivos = Column(LargeBinary, nullable=False)
+    arquivos = Column(String, nullable=False)
     tamanho_papel = Column(String, nullable=False)
-    paginas_por_folha = Column(Boolean, nullable=False)
+    paginas_por_folha = Column(Integer, nullable=False)
     margens = Column(String, nullable=False)
     paginas = Column(String, nullable=False)
     disposicao = Column(String, nullable=False)
