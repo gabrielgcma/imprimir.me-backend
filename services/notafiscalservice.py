@@ -1,5 +1,8 @@
 from fastapi import HTTPException, status
 from model.notafiscal import NotaFiscal as NotaFiscalModel, NotaFiscalCreate
+from services.empresaservice import EmpresaCrud
+from services.usuarioservice import UsuarioCrud
+from services.pedidoservice import PedidoCrud
 from data.database import NotaFiscal
 import logging
 
@@ -12,8 +15,27 @@ class NotaFiscalCrud:
 
     def cadastrar_nota_fiscal(self, notafiscal: NotaFiscalCreate):
         notafiscal_decode = notafiscal.dict()
-        notafiscal_banco = NotaFiscal(**notafiscal_decode)
         
+        if (UsuarioCrud.get_usuario(self, notafiscal_decode['id_usuario']) == None):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Usuário não encontrado",
+            )
+
+        if (EmpresaCrud.get_empresa(self, notafiscal_decode['id_empresa']) == None):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Empresa não encontrada",
+            )
+        
+        if (PedidoCrud.get_pedido(self, notafiscal_decode['id_pedido']) == None):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Pedido não encontrado",
+            )
+        
+        notafiscal_banco = NotaFiscal(**notafiscal_decode)
+
         try:
             self.db_session.add(notafiscal_banco)
             self.db_session.commit()
